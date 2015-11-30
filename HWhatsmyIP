@@ -1,0 +1,25 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use IO::Socket::INET;
+
+my $local_ip_address = get_local_ip_address();
+
+print "$local_ip_address\n";
+
+# This idea was stolen from Net::Address::IP::Local::connected_to()
+sub get_local_ip_address {
+    my $socket = IO::Socket::INET->new(
+        Proto       => 'udp',
+        PeerAddr    => '198.41.0.4', # a.root-servers.net
+        PeerPort    => '53', # DNS
+    );
+
+    # A side-effect of making a socket connection is that our IP address
+    # is available from the 'sockhost' method
+    my $local_ip_address = $socket->sockhost;
+
+    return $local_ip_address;
+}
